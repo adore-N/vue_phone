@@ -1,18 +1,43 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Banner></Banner>
+    <List :listData='listData'></List>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import Banner from '../components/Banner' 
+import List from '../components/List' 
 export default {
+  data(){
+    return {
+      listData: []
+    }
+  },
   name: 'home',
-  components: {
-    HelloWorld
+  components: {   //注册组件
+    Banner,
+    List
+  },
+  activated(){
+    // console.log(1)
+    axios({
+      url:'http://localhost:3000/shop/home',
+      // params:{}  //请求数据的页面,条数
+       params:{_page:1,_limit:4}
+    }).then(
+      // res=>{this.listData = res.data},
+      res=>this.listData = res.data
+    ),
+    axios({
+      url:'http://localhost:3000/shop/banner',
+      params:{_page:1,_limit:4}
+    }).then(
+      res=>{
+        this.$store.dispatch('UPDATE_BANNER',res.data)
+      }
+    )
   }
+
 }
 </script>
